@@ -9,13 +9,13 @@
                                 <h5 class="fw-bold">Danh sách voucher</h5>
                             </div>
                             <div class="input-group w-50">
-                                <input type="text" placeholder="Tìm kiếm voucher..." class="form-control">
+                                <input v-model="tuKhoa" type="text" placeholder="Tìm kiếm voucher..." class="form-control">
                                 <button class="btn btn-outline-danger" type="button">Tìm kiếm</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div v-for="voucher in list" :key="voucher.id" class="card mt-3">
+                <div v-for="voucher in locDanhSach  ()" :key="voucher.id" class="card mt-3">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-3">
@@ -48,7 +48,7 @@
                         <div class="alert alert-secondary mt-3" role="alert">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>Tổng voucher</div>
-                                <div><button class="rounded-pill btn btn-sucess">
+                                <div><button class="rounded-pill btn btn-dark">
                                     {{ list.length }}
                                 </button></div>
                             </div>
@@ -56,7 +56,7 @@
                         <div class="alert alert-success mt-3" role="alert">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>Còn hạn</div>
-                                <div><button class="rounded-pill btn btn-sucess">
+                                <div><button class="rounded-pill btn btn-success">
                                     {{ conHan() }}
                                 </button></div>
                             </div>
@@ -64,7 +64,7 @@
                         <div class="alert alert-danger mt-3" role="alert">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>Hết hạn</div>
-                                <div><button class="rounded-pill btn btn-sucess">
+                                <div><button class="rounded-pill btn btn-danger">
                                     {{ hetHan() }}
                                 </button></div>
                             </div>
@@ -88,6 +88,7 @@
 
         </div>
     </div>
+    
 </template>
 <script>
 
@@ -96,7 +97,8 @@ import axios from 'axios'
 export default {
     data() {
         return {
-            list: []
+            list: [],
+            tuKhoa:''
         }
     },
     mounted() {
@@ -114,6 +116,13 @@ export default {
         },
         hetHan(){
             return this.list.filter(voucher => voucher.is_quan === 1).length;
+        },
+        dieuKienLoc(value){
+            let tuKhoa=this.tuKhoa.toLowerCase().trim();
+            return value.ma_voucher.toLowerCase().includes(tuKhoa) || value.mo_ta.toLowerCase().includes(tuKhoa) || value.is_quan.toString().toLowerCase().includes(tuKhoa);
+        },
+        locDanhSach(){
+            return this.list.filter(this.dieuKienLoc);
         }
     }
 }
